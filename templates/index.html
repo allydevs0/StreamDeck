@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Deck</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+            background-image: url("https://cdn.dribbble.com/users/2538045/screenshots/18546303/media/08660809deb53ed726c8ff936dac2aab.png?resize=400x300&vertical=center");
+
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            transition: all 0.3s ease;
+            
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            background: rgba(255, 255, 255, 0.192);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(43, 43, 43, 0.568);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            max-width: 500px; /* Definindo largura máxima */
+            margin: 0 auto; /* Centralizando na tela */
+        }
+
+        .button {
+            padding: 15px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(43, 43, 43, 0.568);
+            background-color: #0078d4;
+            color: white;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            width: 100%; /* Botões ocupam a largura total */
+        }
+
+        .button:hover {
+            padding: 15px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(43, 43, 43, 0.568);
+            background-color: #004377;
+            color: white;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            width: 100%; /* Botões ocupam a largura total */
+        }
+        .wrapper{
+        background: rgba(255, 255, 255, 0.192);
+        backdrop-filter: blur(10px);
+        height: 250px;
+        width: 600px;
+        border-radius: 15px;
+        border: 1px solid rgba(43, 43, 43, 0.568);
+      }
+        .input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #0078d4;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: calc(100% - 22px); /* Largura do input ajustada para ocupar a largura total do container */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .range {
+            width: calc(100% - 22px);
+            --webkit-appearance: none;
+            height: 10px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity.2s;
+            margin-bottom: 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            transition: opacity 0.5s;
+            width: 100%; /* Mensagem ocupa a largura total */
+            text-align: center; /* Alinhamento centralizado */
+        }
+
+        .glass {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            max-width: 500px; /* Definindo largura máxima */
+            margin: 20px auto; /* Centralizando na tela */
+        }
+
+        /* Media query para ajustar o layout em telas menores */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px; /* Reduzindo o espaçamento interno */
+            }
+
+            .input,
+            .range,
+            .button {
+                width: 100%; /* Elementos ocupam a largura total */
+            }
+
+            .glass {
+                padding: 10px; /* Reduzindo o espaçamento interno */
+                margin: 10px auto; /* Centralizando na tela */
+            }
+        }
+    </style>
+</head>
+
+<body>
+  
+    <div class="container">
+        <h1 style="margin-bottom: 20px;">DECKALLY</h1>
+        
+        <p class="message" id="message"></p>
+        <input type="range" id="volume" class="range" name="volume" min="0" max="100"
+            oninput="updateVolume(this.value)">
+        <button class="button" onclick="sendAction('mute')">Mute Discord</button>
+        <button class="button" onclick="selectImage()">Select Image</button>
+    </div>
+    
+
+    <script>
+        function selectImage() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png, image/jpeg';
+
+    input.onchange = function (event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function () {
+            const base64Image = reader.result;
+            document.body.style.backgroundImage = `url(${base64Image})`;
+            
+            // Salvar a preferência do usuário localmente (usando localStorage)
+            localStorage.setItem('wallpaper', base64Image);
+        };
+            reader.readAsDataURL(file);
+        };
+
+            input.click();
+        }
+
+        window.onload = function() {
+            const wallpaper = localStorage.getItem('wallpaper');
+            if (wallpaper) {
+                document.body.style.backgroundImage = `url(${wallpaper})`;
+            }
+        };
+
+                function updateVolume(volume) {
+            fetch('/action', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ button: 'volume', level: volume })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function showMessage(message) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = message;
+            messageElement.classList.add('show');
+
+            // Adiciona um timer para esconder a mensagem após 2 segundos
+            setTimeout(() => {
+                messageElement.classList.add('hide');
+                setTimeout(() => {
+                    messageElement.classList.remove('show');
+                    messageElement.classList.remove('hide');
+                }, 500); // tempo de animação de fade-out
+            }, 2000);
+        }
+        
+    </script>
+</body>
+
+</html>
