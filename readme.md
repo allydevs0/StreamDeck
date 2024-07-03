@@ -33,3 +33,6 @@ python main.py
 ```
 
 This project is open source but put my credits :)
+
+
+![image](https://github.com/allydevs0/SteamDeck-Deckally-/assets/170764753/c653fb1e-6c7a-4fd3-bae2-e721319af981)
